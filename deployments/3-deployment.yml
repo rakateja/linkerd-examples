@@ -60,6 +60,8 @@ spec:
       - env:
         - name: PORT
           value: "8080"
+        - name: FOOBAR_API_HOST
+          value: "http://foobar-api:8080"
         image: web-api:latest
         imagePullPolicy: Never
         name: web-api

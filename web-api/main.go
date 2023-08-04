@@ -7,6 +7,8 @@ import (
 	"os"
 
 	"net/http"
+
+	"github.com/go-resty/resty/v2"
 )
 
 func main() {
@@ -16,8 +18,24 @@ func main() {
 
 func realMain() {
 	http.HandleFunc("/me", func(w http.ResponseWriter, req *http.Request) {
+		client := resty.New()
+		resp, err := client.R().
+			EnableTrace().
+			Get(fmt.Sprintf("%s/foobar", os.Getenv("FOOBAR_API_HOST")))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		var foobarMsg struct {
+			Msg string `json:"msg"`
+		}
+		err = json.Unmarshal(resp.Body(), &foobarMsg)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		b, err := json.Marshal(map[string]interface{}{
-			"msg": "FOOBAR",
+			"msg": foobarMsg.Msg,
 			"src": "foobar-api",
 		})
 		if err != nil {
