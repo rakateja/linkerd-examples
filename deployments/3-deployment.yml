@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: foobar-api
+    app.kubernetes.io/part-of: linkerd-examples
+    app.kubernetes.io/version: v11
+  name: foobar-api
+  namespace: linkerd-examples
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foobar-api
+      version: v11
+  template:
+    metadata:
+      labels:
+        app: foobar-api
+        version: v11
+    spec:
+      containers:
+      - env:
+        - name: PORT
+          value: "8080"
+        image: foobar-api:latest
+        imagePullPolicy: Never
+        name: foobar-api
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+      serviceAccountName: foobar-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels:
+    app.kubernetes.io/name: web-api
+    app.kubernetes.io/part-of: linkerd-examples
+    app.kubernetes.io/version: v11
+  name: web-api
+  namespace: linkerd-examples
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: web-api
+      version: v11
+  template: 
+    metadata:
+      labels:
+        app: web-api
+        version: v11
+    spec:
+      containers:
+      - env:
+        - name: PORT
+          value: "8080"
+        image: web-api:latest
+        imagePullPolicy: Never
+        name: web-api
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+      serviceAccountName: web-api
+        
+        

@@ -18,6 +18,7 @@ func realMain() {
 	http.HandleFunc("/me", func(w http.ResponseWriter, req *http.Request) {
 		b, err := json.Marshal(map[string]interface{}{
 			"msg": "FOOBAR",
+			"src": "foobar-api",
 		})
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
